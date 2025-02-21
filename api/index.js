@@ -15,6 +15,7 @@ const pool = mysql.createPool({
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0,
+    connectTimeout: 10000 // 10 seconds
 });
 
 // Routes
@@ -48,15 +49,22 @@ app.post("/api/data", async (req, res) => {
 
 // GET API to Fetch Users
 app.get("/api/users", async (req, res) => {
+    const { page = 1, limit = 10 } = req.query; // Default page 1, 10 users per page
+    const offset = (page - 1) * limit;
+
     try {
         const connection = await pool.getConnection();
-        const [results] = await connection.execute("SELECT * FROM users");
+        const [results] = await connection.execute(
+            "SELECT * FROM users LIMIT ? OFFSET ?",
+            [parseInt(limit), parseInt(offset)]
+        );
         connection.release();
         res.status(200).json(results);
     } catch (error) {
         res.status(500).json({ message: "Database error", error: error.message });
     }
 });
+
 
 // Export Express App
 module.exports = app;
