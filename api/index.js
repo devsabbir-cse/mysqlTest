@@ -1,12 +1,12 @@
 const express = require("express");
-const mysql = require("mysql2/promise"); // Using promise-based MySQL
+const mysql = require("mysql2/promise");
 const cors = require("cors");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MySQL Connection
+// MySQL Connection Pool
 const pool = mysql.createPool({
     host: "fdb28.awardspace.net",
     user: "4592095_bkash",
@@ -49,5 +49,10 @@ app.get("/api/users", async (req, res) => {
     }
 });
 
-// Export for Vercel
+// Root Route
+app.get("/", (req, res) => {
+    res.send("Welcome to the API!");
+});
+
+// Export the Express App for Vercel
 module.exports = app;
