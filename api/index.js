@@ -6,7 +6,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MySQL Connection Pool
+// MySQL Connection
 const pool = mysql.createPool({
     host: "fdb28.awardspace.net",
     user: "4592095_bkash",
@@ -17,7 +17,16 @@ const pool = mysql.createPool({
     queueLimit: 0,
 });
 
-// POST API to Insert Data into MySQL
+// Routes
+app.get("/", (req, res) => {
+    res.send("Welcome to the API!");
+});
+
+app.get("/api/test", (req, res) => {
+    res.json({ message: "API is working!" });
+});
+
+// POST API to Insert Data
 app.post("/api/data", async (req, res) => {
     const { name, email } = req.body;
     if (!name || !email) {
@@ -49,10 +58,5 @@ app.get("/api/users", async (req, res) => {
     }
 });
 
-// Root Route
-app.get("/", (req, res) => {
-    res.send("Welcome to the API!");
-});
-
-// Export the Express App for Vercel
+// Export Express App
 module.exports = app;
